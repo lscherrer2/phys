@@ -1,5 +1,5 @@
 import numpy as np
-from numpy.typing import NDArray, SupportsFloat
+from numpy.typing import NDArray 
 
 __all__ = ["Object"]
 
@@ -7,8 +7,8 @@ class Object:
     def __init__ (
         self, 
         mass: float = 1, 
-        pos: NDArray | list[SupportsFloat] = np.array([0.0, 0.0, 0.0]), 
-        vel: NDArray | list[SupportsFloat] = np.array([0.0, 0.0, 0.0]),
+        pos: NDArray | list = np.array([0.0, 0.0, 0.0]), 
+        vel: NDArray | list = np.array([0.0, 0.0, 0.0]),
 
     ):
         self.mass: float = mass

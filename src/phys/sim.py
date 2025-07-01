@@ -17,7 +17,7 @@ class Simulation:
 
     def exec (self): 
         epoch = self.start
-        while epoch <= self.end:
+        while epoch < self.end:
             timestep = min(self.end - epoch, self.timestep) 
             self.step(timestep)
             epoch += timestep
