@@ -1,6 +1,5 @@
+from abc import ABC
 
 
-
-class Interaction:
-    def __init__ (self):
-        pass
+class Interaction(ABC):
+    pass
