@@ -1,8 +1,9 @@
-from unittest import TestCase
+from unittest import TestCase, main
 from phys.buffer import Buffer
 
 class BufferedObject (Buffer):
     def __init__ (self, a: str, b: str):
+        super().__init__()
         self.a = a
         self.b = b
 
@@ -25,6 +26,7 @@ class TestBuffer (TestCase):
         self.assertEqual(obj.b, 'new_b')
 
 
-
+if __name__ == "__main__":
+    main()
 
 
