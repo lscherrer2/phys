@@ -1,18 +1,13 @@
-from typing import TYPE_CHECKING
 from abc import ABC, abstractmethod
-from numpy.typing import NDArray
+from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
-    from phys.entity import Particle
-    from phys.forces.interaction import Interaction
+    from numpy.typing import NDArray
+    from phys.entities.particle import Particle
 
-__all__ = [
-    "Engine",
-]
-
+__all__ = ["Engine"]
 
 class Engine (ABC):
-
-    interaction_type = None
 
     def __init__ (self, **kwargs):
         pass
@@ -21,3 +16,5 @@ class Engine (ABC):
     def interact (self, particles: Particle, effectors: list[Particle]) -> list[NDArray]:
         """Calculates the force between particles"""
         ...
+
+

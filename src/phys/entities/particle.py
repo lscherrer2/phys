@@ -1,13 +1,11 @@
 from phys.buffer import Buffer
 from typing import TYPE_CHECKING, Iterable
-import numpy as np
+
 if TYPE_CHECKING:
     from phys.forces import Interaction
     from numpy.typing import NDArray
 
-__all__ = [
-    "Particle",
-]
+__all__ = ["Particle"]
 
 class Particle(Buffer):
     def __init__ (
@@ -22,11 +20,7 @@ class Particle(Buffer):
         self.mass = mass
         self.position = position.copy().astype(float)
         self.velocity = velocity.copy().astype(float)
-        self.interactions = set(interactions)
-
-        
-
-
-
-        
+        self.interactions: dict[type[Interaction], Interaction] = {
+            type(interaction): interaction for interaction in interactions
+        }
 

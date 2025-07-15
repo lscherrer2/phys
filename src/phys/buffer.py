@@ -1,6 +1,4 @@
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from typing import Any
+from abc import ABC
 
 class Buffer(ABC):
     def __init__ (self, **kwargs):
@@ -16,7 +14,4 @@ class Buffer(ABC):
                      "to no corresponding object property"
                 )
         self.buffer = {}
-
-
-
 
