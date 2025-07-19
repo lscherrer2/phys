@@ -1,8 +1,5 @@
 from phys.buffer import Buffer
-from typing import TYPE_CHECKING, Iterable
-
-if TYPE_CHECKING:
-    from numpy.typing import NDArray
+from numpy.typing import NDArray
 
 __all__ = ["Particle"]
 

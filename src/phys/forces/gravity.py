@@ -1,10 +1,7 @@
 from phys.forces.engine import Engine
 import numpy as np
-
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from numpy.typing import NDArray
-    from phys.entities.particle import Particle
+from phys.entities.particle import Particle
+from numpy.typing import NDArray
 
 class Gravity (Engine):
     def __init__ (self, G = 6.67430e-11, **kwargs):

@@ -1,11 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Callable
+from typing import Callable
+from phys.entities.particle import Particle
 import json
 from threading import Thread
-
-if TYPE_CHECKING:
-    from numpy.typing import NDArray
-    from phys.entities.particle import Particle
+from numpy.typing import NDArray
 
 __all__ = ["Engine"]
 
