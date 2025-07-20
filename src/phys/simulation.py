@@ -3,6 +3,7 @@ from typing import Optional
 import numpy as np
 import polars as pl
 
+__all__ = ["Simulation"]
 
 class Timer:
     def __init__ (self, timestep: float, end: float, start: float = 0):
@@ -12,9 +13,11 @@ class Timer:
         self.done = self.time == end
 
     def __next__ (self):
-        if self.done: raise StopIteration()
+        if self.time >= self.end:
+            raise StopIteration()
         previous_time = self.time
         next_time = min(self.end, self.time + self.timestep)
+        self.time = next_time
         return next_time - previous_time
 
     def __iter__ (self):
@@ -31,6 +34,7 @@ class Simulation:
         self.timestep: float = timestep
         self.particles: list[Particle] = particles if particles is not None else []
         self.engines: list[Engine] = engines if engines is not None else []
+        self.db = []
 
     def add_particle (self, particle: Particle):
         self.particles.append(particle)
@@ -74,12 +78,12 @@ class Simulation:
 
     def record (self):
         snapshot = {
-            particle: particle.position 
+            f"Particle {particle.num}": particle.position 
             for particle in self.particles
         }
         self.db.append(snapshot)
     
-    def _init_db (self):
+    def reset_db (self):
         self.db = []
 
     @property
@@ -90,8 +94,11 @@ class Simulation:
     def simulate (self, end_time: float, timestep: Optional[float] = None):
         timestep = self.timestep if timestep is None else timestep
         timer = Timer(timestep, end_time, 0)
+        self.record()
         for timestep in timer:
+            print(f"running timestep: {timestep}")
             self.step(timestep)
+            self.record()
             
 
 
