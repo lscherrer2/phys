@@ -12,11 +12,11 @@ class Gravity (Engine):
         )
 
     def force (self, particle: Particle, effector: Particle) -> u.Quantity:
-        r_vec: u.Quantity = effector.position - particle.position # type: ignore
-        r_mag: u.Quantity = np.linalg.norm(r_vec) # type: ignore
-        r_direction: u.Quantity = r_vec / r_mag
+        r_vec = effector.position - particle.position
+        r_mag = np.linalg.norm(r_vec)
+        r_direction = r_vec / r_mag
 
-        f_mag: u.Quantity = self.G * particle.mass * effector.mass / (r_mag ** 2)
+        f_mag = self.G * particle.mass * effector.mass / (r_mag ** 2)
         f_mag = f_mag.to(u.N) # type: ignore
 
         f_vec = f_mag * r_direction

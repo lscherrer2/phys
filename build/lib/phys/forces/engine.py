@@ -9,7 +9,7 @@ class Engine (ABC):
     def force (self, particle: Particle, effector: Particle) -> u.Quantity:
         pass
 
-    def interact (self, particles: list[Particle]) -> u.Quantity:
+    def interact (self, particles: list[Particle]):
         num_particles = len(particles)
         force_matrix = np.zeros((num_particles, num_particles, 3), dtype=float) * u.N
         for p, particle in enumerate(particles):
@@ -17,5 +17,5 @@ class Engine (ABC):
                 force = self.force(particle, effector)
                 force_matrix[p, e] = force
                 force_matrix[e, p] = -force
-        net_forces: u.Quantity = np.sum(force_matrix, axis=1)
-        return net_forces.reshape(-1, 3) # type: ignore
+        net_forces = np.sum(force_matrix, axis=1)
+        return net_forces.reshape(-1)

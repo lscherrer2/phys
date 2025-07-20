@@ -8,6 +8,8 @@ src/phys.egg-info/dependency_links.txt
 src/phys.egg-info/requires.txt
 src/phys.egg-info/top_level.txt
 src/phys/forces/engine.py
+src/phys/forces/gravity.py
+src/phys/integrators/euler.py
 src/phys/integrators/integrator.py
 test/test_buffer.py
 test/test_engines.py
