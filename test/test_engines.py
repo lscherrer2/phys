@@ -1,62 +1,36 @@
 from unittest import TestCase, main
-from phys import Gravity, Particle, Electromagnetism
+from phys.forces.gravity import Gravity
+from phys.particle import Particle
+import astropy.units as u
 import numpy as np
 
 class TestEngine (TestCase):
     def test_interact (self):
         engine = Gravity(1.0)
-        p1 = Particle(
-            mass=1.0,
-            position=np.array([0.5, 0, 0]),
-            velocity=np.array([0, 0.5, 0]),
-            charge=1.0,
-        )
-        p2 = Particle(
-            mass=1.0,
-            position=np.array([-0.5, 0, 0]),
-            velocity=np.array([0, -0.5, 0]),
-            charge=1.0,
-        )
-        force = engine.interact(p1, p2)
+        particles = [
+            Particle(
+                mass=1.0 << u.kg,
+                position=np.random.randn(3) << u.m,
+                velocity=np.random.randn(3) << (u.m / u.s), # type: ignore
+                charge=0.0 * u.C,
+            ) for _ in range(10)
+        ]
+        force = engine.interact(particles)
         self.assertIsInstance(force, np.ndarray)
-        self.assertEqual(force.shape, (3,))
+        self.assertEqual(force.shape, (10,))
 
     def test_batch_interact_single_core (self):
-        engine = Electromagnetism(1.0)
-        p1 = Particle(
-            mass=1.0,
-            position=np.array([0.5, 0, 0]),
-            velocity=np.array([0, 0.5, 0]),
-            charge=1.0,
-        )
+        engine = Gravity(1.0)
         num_effectors = 10
-        effectors = []
-        for _ in range(num_effectors):
-            particle = Particle(
-                mass=np.random.randn(1).item(),
-                position=np.random.randn(3),
-                velocity=np.random.randn(3),
-                charge=np.random.randn(1).item(),
-            )
-            effectors.append(particle)
+        particles = [
+            Particle(
+                mass=1.0 << u.kg,
+                position=np.random.randn(3) << u.m,
+                velocity=np.random.randn(3) << (u.m / u.s), # type: ignore
+                charge=0.0 * u.C,
+            ) for _ in range(num_effectors)
+        ]
+        forces =
 
-        forces = engine.batch_interact(
-            particle=p1,
-            effectors=effectors,
-            cores=1,
-        )
-        self.assertIsInstance(forces, dict)
-        for force in forces.values():
-            self.assertIsInstance(force, np.ndarray)
-
-        self.assertEqual(len(forces), num_effectors)
-        
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-

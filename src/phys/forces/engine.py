@@ -1,94 +1,21 @@
 from abc import ABC, abstractmethod
-from typing import Callable
-from phys.entities.particle import Particle
-import json
-from threading import Thread
-from numpy.typing import NDArray
-
-__all__ = ["Engine"]
+from phys.particle import Particle
+import numpy as np
+import astropy.units as u
 
 class Engine (ABC):
 
-    def __init__ (self, **kwargs):
-        if kwargs:
-            print(f"Received unrecognized keyword arguments:\n", json.dumps(kwargs, indent=4))
-
     @abstractmethod
-    def interact (self, particle: Particle, effector: Particle) -> NDArray:
-        """Calculates the force between particles"""
-        ...
+    def force (self, particle: Particle, effector: Particle) -> u.Quantity:
+        pass
 
-    def batch_interact (
-        self, 
-        particle: Particle, 
-        effectors: list[Particle], 
-        cores: int = 1
-    ) -> dict[Particle, NDArray]:
-
-        num_interactions = effectors.__len__()
-        if cores == 1:
-            return { 
-                effector: self.interact(particle, effector) 
-                for effector in effectors 
-            }
-
-        def single_interaction (
-            particle: Particle, 
-            effector: Particle, 
-            interact_fn: Callable,
-            result_map: dict[Particle, NDArray]
-        ):
-            result_map |= { particle: interact_fn(particle, effector) }
-
-        def multiple_interaction (
-            particle: Particle, 
-            effectors: list[Particle], 
-            interact_fn: Callable,
-            result_map: dict[Particle, NDArray]
-        ):
-            for effector in effectors:
-                result_map |= { particle: interact_fn(particle, effector) }
-
-        result = {}
-        threads: list[Thread] = []
-
-        if num_interactions > cores:
-            increment = num_interactions // cores
-            for core in range(cores):
-                effector_batch = effectors[core*increment:min(core*(increment+1),num_interactions)]
-                thread = Thread(
-                    target=multiple_interaction,
-                    kwargs={
-                        'particle': particle,
-                        'effectors': effector_batch,
-                        'interact_fn': self.interact,
-                        'result_map': result,
-                    }
-                )
-                threads.append(thread)
- 
-        else:
-            for effector in effectors:
-                thread = Thread(
-                    target=single_interaction, 
-                    kwargs={
-                        'particle': particle,
-                        'effector': effector,
-                        'interact_fn': self.interact,
-                        'result_map': result,
-                    }
-                )
-                threads.append(thread)
-                thread.start()
-
-        for thread in threads:
-            thread.join()
-        
-        return result
-
-
-
-
-        
-
-
+    def interact (self, particles: list[Particle]):
+        num_particles = len(particles)
+        force_matrix = np.zeros((num_particles, num_particles, 3), dtype=float) * u.N
+        for p, particle in enumerate(particles):
+            for e, effector in enumerate(particles[p+1:]):
+                force = self.force(particle, effector)
+                force_matrix[p, e] = force
+                force_matrix[e, p] = -force
+        net_forces = np.sum(force_matrix, axis=1)
+        return net_forces.reshape(-1)

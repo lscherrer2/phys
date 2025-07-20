@@ -1,17 +1,9 @@
 from abc import ABC
 
-class Buffer(ABC):
+class Buffer (ABC):
     def __init__ (self, **kwargs):
-        self.buffer = {}
+       self.buffer = {}
 
-    def flush (self):
-        for attr, val in self.buffer.items():
-            if hasattr(self, attr):
-                setattr(self, attr, val)
-            else:
-                raise AttributeError(
-                    f"Attempted to flush buffer property '{attr}'"
-                     "to no corresponding object property"
-                )
-        self.buffer = {}
-
+    def flush_buffer (self):
+        for key, value in self.buffer.items():
+            setattr(self, key, value)
