@@ -19,35 +19,35 @@ class Engine (ABC):
         ...
 
     def batch_interact (
-        self, 
-        particle: Particle, 
-        effectors: list[Particle], 
+        self,
+        particle: Particle,
+        effectors: list[Particle],
         cores: int = 1
     ) -> dict[Particle, NDArray]:
 
         num_interactions = effectors.__len__()
         if cores == 1:
-            return { 
-                effector: self.interact(particle, effector) 
-                for effector in effectors 
+            return {
+                effector: self.interact(particle, effector)
+                for effector in effectors
             }
 
         def single_interaction (
-            particle: Particle, 
-            effector: Particle, 
+            particle: Particle,
+            effector: Particle,
             interact_fn: Callable,
             result_map: dict[Particle, NDArray]
         ):
-            result_map |= { particle: interact_fn(particle, effector) }
+            result_map |= { effector: interact_fn(particle, effector) }
 
         def multiple_interaction (
-            particle: Particle, 
-            effectors: list[Particle], 
+            particle: Particle,
+            effectors: list[Particle],
             interact_fn: Callable,
             result_map: dict[Particle, NDArray]
         ):
             for effector in effectors:
-                result_map |= { particle: interact_fn(particle, effector) }
+                result_map |= { effector: interact_fn(particle, effector) }
 
         result = {}
         threads: list[Thread] = []
@@ -66,11 +66,11 @@ class Engine (ABC):
                     }
                 )
                 threads.append(thread)
- 
+
         else:
             for effector in effectors:
                 thread = Thread(
-                    target=single_interaction, 
+                    target=single_interaction,
                     kwargs={
                         'particle': particle,
                         'effector': effector,
@@ -83,12 +83,12 @@ class Engine (ABC):
 
         for thread in threads:
             thread.join()
-        
+
         return result
 
 
 
 
-        
+
 
 

@@ -26,9 +26,9 @@ class Timer:
 class Simulation:
 
     def __init__ (
-        self, 
-        timestep: float, 
-        particles: Optional[list[Particle]], 
+        self,
+        timestep: float,
+        particles: Optional[list[Particle]],
         engines: Optional[list[Engine]],
     ):
         self.timestep: float = timestep
@@ -40,7 +40,7 @@ class Simulation:
         self.particles.append(particle)
 
     def add_particles (self, particles: list[Particle]):
-        for particle in particles: 
+        for particle in particles:
             self.add_particle(particle)
 
     def step (self, timestep: Optional[float] = None):
@@ -52,13 +52,13 @@ class Simulation:
             particle.buffer["position"] = particle.position + particle.velocity * timestep
             particle.buffer["velocity"] = particle.velocity.copy()
 
-        # calculate forces on each particle 
+        # calculate forces on each particle
         for particle in self.particles:
 
             # calculate forces on particle
             forces: list[np.ndarray] = []
             for engine in self.engines:
-                engine_forces = engine.batch_interact(particle, self.particles).values()
+                engine_forces = engine.batch_interact(particle, self.particles, cores=4).values()
                 forces.extend(engine_forces)
 
             # calculate acceleration over timestep
@@ -76,13 +76,14 @@ class Simulation:
         for particle in self.particles:
             particle.flush()
 
-    def record (self):
-        snapshot = {
-            f"Particle {particle.num}": particle.position 
+    def record (self, time: float):
+        snapshot = {"time": time}
+        snapshot |= {
+            f"Particle {particle.num}": particle.position
             for particle in self.particles
         }
         self.db.append(snapshot)
-    
+
     def reset_db (self):
         self.db = []
 
@@ -94,11 +95,10 @@ class Simulation:
     def simulate (self, end_time: float, timestep: Optional[float] = None):
         timestep = self.timestep if timestep is None else timestep
         timer = Timer(timestep, end_time, 0)
-        self.record()
+        self.record(timer.time)
         for timestep in timer:
-            print(f"running timestep: {timestep}")
             self.step(timestep)
-            self.record()
-            
+            self.record(timer.time)
+
 
 
