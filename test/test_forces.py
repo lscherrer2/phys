@@ -3,7 +3,7 @@ from phys import Gravity, Electromagnetism
 from phys import Particle
 import numpy as np
 
-class TestEngines(TestCase):
+class TestForces(TestCase):
     def test_gravity (self):
         engine = Gravity(G=1.0)
         p1 = Particle(
@@ -37,10 +37,11 @@ class TestEngines(TestCase):
             velocity=np.array([0, -0.5, 0]),
             charge=-1.0,
         )
-        engine_force = np.linalg.norm(engine.interact(p1, p2))
-        true_force = 1.0 * p1.charge * p2.charge
+        engine_force_vec = engine.interact(p1, p2)
+        engine_force_mag = np.linalg.norm(engine_force_vec)
 
-        self.assertAlmostEqual(engine_force, true_force, 5)
+        self.assertEqual(list(engine_force_vec / engine_force_mag)[0], -1.0)
+        self.assertAlmostEqual(engine_force_mag, 1.0, 5)
 
 
 if __name__ == "__main__":

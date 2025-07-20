@@ -16,7 +16,7 @@ class Electromagnetism (Engine):
 
         r_dir = r_vec / r_mag
 
-        f_mag = self.k * particle.charge * effector.charge / (r_mag ** 2)
+        f_mag = -1 * self.k * particle.charge * effector.charge / (r_mag ** 2)
         f_vec = r_dir * f_mag
 
         return f_vec

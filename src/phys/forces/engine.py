@@ -10,7 +10,8 @@ __all__ = ["Engine"]
 class Engine (ABC):
 
     def __init__ (self, **kwargs):
-        print(f"Received unrecognized keyword arguments:\n", json.dumps(kwargs, indent=4))
+        if kwargs:
+            print(f"Received unrecognized keyword arguments:\n", json.dumps(kwargs, indent=4))
 
     @abstractmethod
     def interact (self, particle: Particle, effector: Particle) -> NDArray:
@@ -47,7 +48,6 @@ class Engine (ABC):
         ):
             for effector in effectors:
                 result_map |= { particle: interact_fn(particle, effector) }
-
 
         result = {}
         threads: list[Thread] = []
