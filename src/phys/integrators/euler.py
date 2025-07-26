@@ -10,6 +10,8 @@ class Euler (Integrator):
     def integrate (engines: list[Engine], particles: list[Particle], timestep: u.Quantity):
         forces = Integrator.forces(engines, particles)
         masses = u.Quantity([particle.mass for particle in particles])
+        # Reshape masses to (N, 1) for proper broadcasting with forces (N, 3)
+        masses = masses.reshape(-1, 1)
         accels = forces / masses
         delta_vs = accels * timestep
 

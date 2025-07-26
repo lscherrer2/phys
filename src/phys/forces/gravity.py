@@ -4,6 +4,9 @@ import astropy.units as u
 import numpy as np
 
 class Gravity (Engine):
+
+    _symmetric = True
+
     def __init__ (self, G: u.Quantity | float = 6e-11):
         self.G = (
             G.to(u.m**3 / (u.kg * u.s**2))
