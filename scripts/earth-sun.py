@@ -1,6 +1,5 @@
 from phys import Gravity, Simulation, Particle, Leapfrog
 from astropy.units import kg, m, s, C
-import numpy as np
 
 # Solar system parameters
 sun_mass = 1.989e30 << kg
