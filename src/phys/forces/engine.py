@@ -1,94 +1,41 @@
 from abc import ABC, abstractmethod
-from typing import Callable
-from phys.entities.particle import Particle
-import json
-from threading import Thread
-from numpy.typing import NDArray
+from phys.particle import Particle
+import numpy as np
+from astropy.units import Quantity, N
 
 __all__ = ["Engine"]
 
-class Engine (ABC):
 
-    def __init__ (self, **kwargs):
-        if kwargs:
-            print(f"Received unrecognized keyword arguments:\n", json.dumps(kwargs, indent=4))
+class Engine(ABC):
+    symmetric: bool = False
 
     @abstractmethod
-    def interact (self, particle: Particle, effector: Particle) -> NDArray:
-        """Calculates the force between particles"""
-        ...
+    def force(self, particle: Particle, effector: Particle) -> Quantity:
+        pass
 
-    def batch_interact (
-        self, 
-        particle: Particle, 
-        effectors: list[Particle], 
-        cores: int = 1
-    ) -> dict[Particle, NDArray]:
+    def _symmetric_interact(self, particles: list[Particle]) -> Quantity:
+        count = len(particles)
+        force_matrix = np.zeros((count, count, 3)) << N
+        for p, particle in enumerate(particles):
+            for e, effector in enumerate(particles[p + 1 :], p + 1):
+                pe_force = self.force(particle, effector)
+                force_matrix[p, e] = pe_force
+                force_matrix[e, p] = -1.0 * pe_force
+        net_forces = np.sum(force_matrix, axis=1)
+        return net_forces
 
-        num_interactions = effectors.__len__()
-        if cores == 1:
-            return { 
-                effector: self.interact(particle, effector) 
-                for effector in effectors 
-            }
+    def _asymmetric_interact(self, particles: list[Particle]) -> Quantity:
+        count = len(particles)
+        force_matrix = np.zeros((count, count, 3)) << N
+        for p, particle in enumerate(particles):
+            for e, effector in enumerate(particles):
+                if particle is effector:
+                    continue
+                pe_force = self.force(particle, effector)
+                force_matrix[p, e] = pe_force
+        net_forces = np.sum(force_matrix, axis=1)
+        return net_forces
 
-        def single_interaction (
-            particle: Particle, 
-            effector: Particle, 
-            interact_fn: Callable,
-            result_map: dict[Particle, NDArray]
-        ):
-            result_map |= { particle: interact_fn(particle, effector) }
+    def interact(self, particles: list[Particle]) -> Quantity: ...
 
-        def multiple_interaction (
-            particle: Particle, 
-            effectors: list[Particle], 
-            interact_fn: Callable,
-            result_map: dict[Particle, NDArray]
-        ):
-            for effector in effectors:
-                result_map |= { particle: interact_fn(particle, effector) }
-
-        result = {}
-        threads: list[Thread] = []
-
-        if num_interactions > cores:
-            increment = num_interactions // cores
-            for core in range(cores):
-                effector_batch = effectors[core*increment:min(core*(increment+1),num_interactions)]
-                thread = Thread(
-                    target=multiple_interaction,
-                    kwargs={
-                        'particle': particle,
-                        'effectors': effector_batch,
-                        'interact_fn': self.interact,
-                        'result_map': result,
-                    }
-                )
-                threads.append(thread)
- 
-        else:
-            for effector in effectors:
-                thread = Thread(
-                    target=single_interaction, 
-                    kwargs={
-                        'particle': particle,
-                        'effector': effector,
-                        'interact_fn': self.interact,
-                        'result_map': result,
-                    }
-                )
-                threads.append(thread)
-                thread.start()
-
-        for thread in threads:
-            thread.join()
-        
-        return result
-
-
-
-
-        
-
-
+    interact = _symmetric_interact if symmetric else _asymmetric_interact

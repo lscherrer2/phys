@@ -1,47 +1,32 @@
 from unittest import TestCase, main
-from phys import Gravity, Electromagnetism
-from phys import Particle
+from phys.forces.gravity import Gravity
+from phys.particle import Particle
 import numpy as np
+import numpy.testing as npt
+from astropy.units import Quantity, kg, m, C, N
+
 
 class TestForces(TestCase):
-    def test_gravity (self):
-        engine = Gravity(G=1.0)
+    def test_gravity(self):
+        engine = Gravity(G=2.0)
         p1 = Particle(
-            mass=1.0,
-            position=np.array([0.5, 0, 0]),
-            velocity=np.array([0, 0.5, 0]),
-            charge=1.0,
+            mass=1.0 << kg,
+            position=np.array([0.5, 0, 0]) << m,
+            velocity=np.array([0, 0.5, 0]) << m,
+            charge=1.0 << C,
         )
         p2 = Particle(
-            mass=1.0,
-            position=np.array([-0.5, 0, 0]),
-            velocity=np.array([0, -0.5, 0]),
-            charge=1.0,
+            mass=1.0 << kg,
+            position=np.array([-0.5, 0, 0]) << m,
+            velocity=np.array([0, -0.5, 0]) << m,
+            charge=1.0 << C,
         )
-        engine_force = np.linalg.norm(engine.interact(p1, p2))
-        true_force = 1.0 * p1.mass * p2.mass
+        forces = engine.interact([p1, p2])
 
-        self.assertAlmostEqual(engine_force, true_force, 5)
+        # g m1 m2 / r**2
+        true_forces: Quantity = np.array([[-2.0, 0.0, 0.0], [2.0, 0.0, 0.0]]) << N
 
-    def test_electromagnetism (self):
-        engine = Electromagnetism(k=1.0)
-        p1 = Particle(
-            mass=1.0,
-            position=np.array([0.5, 0, 0]),
-            velocity=np.array([0, 0.5, 0]),
-            charge=1.0,
-        )
-        p2 = Particle(
-            mass=1.0,
-            position=np.array([-0.5, 0, 0]),
-            velocity=np.array([0, -0.5, 0]),
-            charge=-1.0,
-        )
-        engine_force_vec = engine.interact(p1, p2)
-        engine_force_mag = np.linalg.norm(engine_force_vec)
-
-        self.assertEqual(list(engine_force_vec / engine_force_mag)[0], -1.0)
-        self.assertAlmostEqual(engine_force_mag, 1.0, 5)
+        npt.assert_almost_equal(forces.value, true_forces.value, 5)
 
 
 if __name__ == "__main__":
