@@ -9,7 +9,7 @@ class Euler (Integrator):
     @staticmethod
     def integrate (engines: list[Engine], particles: list[Particle], timestep: u.Quantity):
         forces = Integrator.forces(engines, particles)
-        masses = np.concat([particle.mass.reshape(1) for particle in particles]).reshape(-1, 1)
+        masses = u.Quantity([particle.mass for particle in particles])
         accels = forces / masses
         delta_vs = accels * timestep
 

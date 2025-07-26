@@ -4,7 +4,7 @@ import astropy.units as u
 import numpy as np
 
 class Gravity (Engine):
-    def __init__ (self, G: u.Quantity | float):
+    def __init__ (self, G: u.Quantity | float = 6e-11):
         self.G = (
             G.to(u.m**3 / (u.kg * u.s**2))
             if isinstance(G, u.Quantity)
@@ -20,4 +20,4 @@ class Gravity (Engine):
         f_mag = f_mag.to(u.N) # type: ignore
 
         f_vec = f_mag * r_direction
-        return f_vec
+        return f_vec # type: ignore

@@ -4,6 +4,10 @@ from phys.buffer import Buffer
 import numpy as np
 
 class Particle(Buffer):
+
+    __slots__ = ('mass', 'charge', 'position', 'velocity', 'id', 'buffer')
+    spawned: int = 0
+
     def __init__ (
         self,
         mass: u.Quantity,
@@ -13,6 +17,10 @@ class Particle(Buffer):
         **kwargs
     ):
         super().__init__(**kwargs)
+
+        self.id = Particle.spawned
+        Particle.spawned += 1
+
         self.mass: u.Quantity = mass
         self.charge: u.Quantity = charge
         self.position: u.Quantity = position

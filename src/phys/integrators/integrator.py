@@ -7,8 +7,9 @@ import numpy as np
 class Integrator (ABC):
     @staticmethod
     def forces (engines: list[Engine], particles: list[Particle]):
-        engine_forces = np.concat([engine.interact(particles).reshape(-1, 1, 3) for engine in engines], axis=1)
-        net_forces = np.sum(engine_forces, axis=1)
+        engine_forces = np.concat([engine.interact(particles) for engine in engines], axis=1)
+        # dims: engine, particle, coord
+        net_forces = np.sum(engine_forces, axis=0)
         return net_forces
 
     @staticmethod
