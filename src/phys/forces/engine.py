@@ -3,14 +3,15 @@ from phys.particle import Particle
 import numpy as np
 from astropy.units import Quantity, N
 
+__all__ = ["Engine"]
+
 class Engine (ABC):
 
-    _symmetric: bool = False
+    symmetric: bool = False
 
     @abstractmethod
     def force (self, particle: Particle, effector: Particle) -> Quantity:
         pass
-
 
     def _symmetric_interact (self, particles: list[Particle]) -> Quantity:
         count = len(particles)
@@ -36,7 +37,7 @@ class Engine (ABC):
         return net_forces
 
     def interact (self, particles: list[Particle]) -> Quantity: ...
-    interact = _symmetric_interact if _symmetric else _asymmetric_interact
+    interact = _symmetric_interact if symmetric else _asymmetric_interact
 
 
 

@@ -4,6 +4,8 @@ from phys.forces.engine import Engine
 import astropy.units as u
 import numpy as np
 
+__all__ = ["Integrator"]
+
 class Integrator (ABC):
     @staticmethod
     def forces (engines: list[Engine], particles: list[Particle]):

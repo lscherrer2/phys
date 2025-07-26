@@ -5,8 +5,9 @@ import numpy as np
 import numpy.testing as npt
 from astropy.units import Quantity, kg, m, C, N
 
+
 class TestForces(TestCase):
-    def test_gravity (self):
+    def test_gravity(self):
         engine = Gravity(G=2.0)
         p1 = Particle(
             mass=1.0 << kg,
@@ -23,13 +24,9 @@ class TestForces(TestCase):
         forces = engine.interact([p1, p2])
 
         # g m1 m2 / r**2
-        true_forces: Quantity = np.array(
-            [[-2.0, 0.0, 0.0],
-             [ 2.0, 0.0, 0.0]]
-        ) << N
+        true_forces: Quantity = np.array([[-2.0, 0.0, 0.0], [2.0, 0.0, 0.0]]) << N
 
         npt.assert_almost_equal(forces.value, true_forces.value, 5)
-
 
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@ from phys.forces.engine import Engine
 import numpy as np
 import astropy.units as u
 
+__all__ = ["Euler"]
+
 class Euler (Integrator):
 
     @staticmethod

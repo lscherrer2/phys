@@ -3,6 +3,8 @@ import astropy.units as u
 from phys.buffer import Buffer
 import numpy as np
 
+__all__ = ["Particle"]
+
 class Particle(Buffer):
 
     __slots__ = ('mass', 'charge', 'position', 'velocity', 'id', 'buffer')
