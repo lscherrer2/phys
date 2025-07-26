@@ -21,7 +21,7 @@ class TestBuffer (TestCase):
         obj = BufferedObject('old_a', 'old_b')
         obj.buffer['a'], obj.buffer['b'] = 'new_a', 'new_b'
 
-        obj.flush()
+        obj.flush_buffer()
         self.assertEqual(obj.a, 'new_a')
         self.assertEqual(obj.b, 'new_b')
 
