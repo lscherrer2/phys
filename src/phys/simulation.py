@@ -2,6 +2,7 @@ from phys.particle import Particle
 from phys.forces.engine import Engine
 from phys.integrators.integrator import Integrator
 import astropy.units as u
+from tqdm import tqdm
 
 __all__ = ["Simulation"]
 
@@ -24,6 +25,9 @@ class SimTimer:
         self.time = next_time
         return next_time - prev_time
 
+    def __len__(self):
+        return int(self.end // self.step).__ceil__()
+
 
 class Simulation:
     def __init__(
@@ -34,12 +38,21 @@ class Simulation:
         self.integrator = integrator
         self.snapshots = []
 
-    def simulate(self, sim_time: u.Quantity, timestep: u.Quantity, record: bool = True):
+    def simulate(
+        self,
+        sim_time: u.Quantity,
+        timestep: u.Quantity,
+        record: bool = True,
+        verbose: bool = True,
+    ):
         timer = SimTimer(0.0 << u.s, sim_time.to(u.s), timestep.to(u.s))
-        self.record(timer.time)
-        for current_step in timer:
-            self.step(current_step)
+        if record:
             self.record(timer.time)
+        timer_iterable = timer if not verbose else tqdm(timer, colour="green")
+        for current_step in timer_iterable:
+            self.step(current_step)
+            if record:
+                self.record(timer.time)
 
     def step(self, timestep: u.Quantity):
         self.integrator.integrate(self.engines, self.particles, timestep)
