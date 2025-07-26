@@ -5,18 +5,18 @@ import numpy as np
 
 __all__ = ["Particle"]
 
-class Particle(Buffer):
 
-    __slots__ = ('mass', 'charge', 'position', 'velocity', 'id', 'buffer')
+class Particle(Buffer):
+    __slots__ = ("mass", "charge", "position", "velocity", "id", "buffer")
     spawned: int = 0
 
-    def __init__ (
+    def __init__(
         self,
         mass: u.Quantity,
         charge: u.Quantity,
         position: u.Quantity,
         velocity: u.Quantity,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(**kwargs)
 
@@ -29,11 +29,16 @@ class Particle(Buffer):
         self.velocity: u.Quantity = velocity
 
     @classmethod
-    def random (cls) -> Particle:
+    def random(cls) -> Particle:
         return cls(
             mass=np.random.randn() << u.kg,
             charge=np.random.randn() << u.C,
-            position=np.random.randn(3,) << u.m,
-            velocity=np.random.randn(3,) << u.m / u.s,
+            position=np.random.randn(
+                3,
+            )
+            << u.m,
+            velocity=np.random.randn(
+                3,
+            )
+            << u.m / u.s,
         )
-
