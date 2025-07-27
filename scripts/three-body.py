@@ -1,4 +1,4 @@
-from phys import Gravity, Simulation, Particle, Leapfrog
+from phys import forces, Simulation, Particle, integrators
 from astropy.units import kg, m, s, C
 
 # Three particles
@@ -23,21 +23,15 @@ particles = [
     ),
 ]
 
-# Gravity-like force
-engine = Gravity(1.0)
-
-# Leapfrog integrator for beter KE preservation
-integrator = Leapfrog()
-
 # Set up and run the simulation
 sim = Simulation(
-    engines=[engine],
+    engines=[forces.Gravity(G=1.0)],
     particles=particles,
-    integrator=integrator,
+    integrator=integrators.Yoshida4(),
 )
 sim.simulate(
-    sim_time=20.0 << s,
-    timestep=0.01 << s,
+    sim_time=10.0 << s,
+    timestep=0.001 << s,
     record=True,
     verbose=True,
 )

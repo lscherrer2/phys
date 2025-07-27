@@ -23,17 +23,12 @@ earth = Particle(
 )
 particles = [sun, earth]
 
-# Gravitational force with default gravitational constant
-engine = Gravity()
-
-# Leapfrog integrator for better energy conservation
-integrator = Yoshida4()
 
 # Set up and run the simulation
 sim = Simulation(
-    engines=[engine],
+    engines=[Gravity()],
     particles=particles,
-    integrator=integrator,
+    integrator=Yoshida4(),
 )
 
 # Simulate for one Earth year (365.25 days)
