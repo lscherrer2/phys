@@ -4,7 +4,6 @@ from phys.forces.engine import Engine
 import astropy.units as u
 from astropy.units import Quantity
 import numpy as np
-from numba import jit
 
 __all__ = ["Integrator"]
 

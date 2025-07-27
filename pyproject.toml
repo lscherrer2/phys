@@ -1,7 +1,7 @@
 [project]
 name = "phys"
 version = "0.1.0"
-dependencies = ["numpy"]
+dependencies = ["numpy", "astropy", "tqdm"]
 
 [build-system]
 requires = ["setuptools", "wheel"]
