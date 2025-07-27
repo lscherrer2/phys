@@ -8,9 +8,11 @@ __all__ = ["Euler"]
 
 
 class Euler(Integrator):
-    @staticmethod
     def integrate(
-        engines: list[Engine], particles: list[Particle], timestep: u.Quantity
+        self,
+        engines: list[Engine],
+        particles: list[Particle],
+        timestep: u.Quantity,
     ):
         accels = Integrator.accelerations(engines, particles)
         delta_vs = accels * timestep

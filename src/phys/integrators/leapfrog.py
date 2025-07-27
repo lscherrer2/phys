@@ -9,7 +9,12 @@ __all__ = ["Leapfrog"]
 
 class Leapfrog(Integrator):
     @staticmethod
-    def integrate(engines: list[Engine], particles: list[Particle], timestep: Quantity):
+    def integrate(
+        self,
+        engines: list[Engine],
+        particles: list[Particle],
+        timestep: Quantity,
+    ):
         # Use dummy particles to avoid flushing buffers on true particles
         dummy_particles = deepcopy(particles)
         accels = Integrator.accelerations(engines, dummy_particles)
