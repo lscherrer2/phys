@@ -1,4 +1,4 @@
-from phys import Gravity, Simulation, Particle, Yoshida8
+from phys import Gravity, Simulation, Particle, Yoshida4
 from astropy.units import kg, m, s, C
 
 # Solar system parameters
@@ -27,7 +27,7 @@ particles = [sun, earth]
 engine = Gravity()
 
 # Leapfrog integrator for better energy conservation
-integrator = Yoshida8()
+integrator = Yoshida4()
 
 # Set up and run the simulation
 sim = Simulation(
