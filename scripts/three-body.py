@@ -24,16 +24,16 @@ particles = [
 ]
 
 # Gravity-like force
-gravity = Gravity(1.0)
+engine = Gravity(1.0)
 
 # Leapfrog integrator for beter KE preservation
-leapfrog = Leapfrog()
+integrator = Leapfrog()
 
 # Set up and run the simulation
 sim = Simulation(
-    engines=[gravity],
+    engines=[engine],
     particles=particles,
-    integrator=leapfrog,
+    integrator=integrator,
 )
 sim.simulate(
     sim_time=20.0 << s,
