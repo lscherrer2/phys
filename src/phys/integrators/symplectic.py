@@ -28,16 +28,16 @@ class Symplectic(Integrator):
             accels = Integrator.accelerations(engines, dummies)
 
             # Perform initial half-step and position update
-            for dummie, accel in zip(dummies, accels):
-                dummie.velocity += 0.5 * h * accel
-                dummie.position += h * dummie.velocity
+            for dummy, accel in zip(dummies, accels):
+                dummy.velocity += 0.5 * h * accel
+                dummy.position += h * dummy.velocity
 
             # Recompute accelerations
             accels = Integrator.accelerations(engines, dummies)
 
             # Perform second half-step
-            for dummie, accel in zip(dummies, accels):
-                dummie.velocity += 0.5 * h * accel
+            for dummy, accel in zip(dummies, accels):
+                dummy.velocity += 0.5 * h * accel
 
         dummy_particles = deepcopy(particles)
 
