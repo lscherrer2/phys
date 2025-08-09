@@ -1,16 +1,17 @@
 from phys.integrators.integrator import Integrator
 from phys.particle import Particle
 from phys.forces.engine import Engine
-import numpy as np
 import astropy.units as u
 
 __all__ = ["Euler"]
 
 
 class Euler(Integrator):
-    @staticmethod
     def integrate(
-        engines: list[Engine], particles: list[Particle], timestep: u.Quantity
+        self,
+        engines: list[Engine],
+        particles: list[Particle],
+        timestep: u.Quantity,
     ):
         accels = Integrator.accelerations(engines, particles)
         delta_vs = accels * timestep

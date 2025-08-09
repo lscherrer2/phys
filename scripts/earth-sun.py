@@ -1,4 +1,4 @@
-from phys import Gravity, Simulation, Particle, Leapfrog
+from phys import Gravity, Simulation, Particle, Yoshida4
 from astropy.units import kg, m, s, C
 
 # Solar system parameters
@@ -23,17 +23,12 @@ earth = Particle(
 )
 particles = [sun, earth]
 
-# Gravitational force with default gravitational constant
-gravity = Gravity()
-
-# Leapfrog integrator for better energy conservation
-leapfrog = Leapfrog()
 
 # Set up and run the simulation
 sim = Simulation(
-    engines=[gravity],
+    engines=[Gravity()],
     particles=particles,
-    integrator=leapfrog,
+    integrator=Yoshida4(),
 )
 
 # Simulate for one Earth year (365.25 days)

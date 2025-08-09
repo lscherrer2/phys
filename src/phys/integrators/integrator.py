@@ -11,10 +11,7 @@ __all__ = ["Integrator"]
 class Integrator(ABC):
     @staticmethod
     def forces(engines: list[Engine], particles: list[Particle]) -> Quantity:
-        engine_forces = np.stack(
-            [engine.interact(particles) for engine in engines], axis=0
-        )
-        # dims: engine, particle, coord
+        engine_forces = np.stack([e.interact(particles) for e in engines], axis=0)
         net_forces = np.sum(engine_forces, axis=0)
         return net_forces
 
@@ -25,9 +22,10 @@ class Integrator(ABC):
         accels = forces / masses
         return accels
 
-    @staticmethod
     @abstractmethod
     def integrate(
-        engines: list[Engine], particles: list[Particle], timestep: u.Quantity
-    ):
-        pass
+        self,
+        engines: list[Engine],
+        particles: list[Particle],
+        timestep: u.Quantity,
+    ): ...

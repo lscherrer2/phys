@@ -1,3 +1,3 @@
 from phys.integrators.integrator import *
 from phys.integrators.euler import *
-from phys.integrators.leapfrog import *
+from phys.integrators.symplectic import *
